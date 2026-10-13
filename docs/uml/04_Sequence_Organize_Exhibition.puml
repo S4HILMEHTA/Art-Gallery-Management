@@ -1,0 +1,48 @@
+@startuml
+title Sequence Diagram 2 - Organize Exhibition (add artwork to an exhibition)
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+autonumber
+
+actor "Gallery Manager" as U
+participant "Menu" as M
+participant "Utils" as T
+participant "Gallery" as G
+participant "Exhibition" as E
+participant "Artwork" as A
+
+U -> M : choose 6 -> 3 (Organize Exhibition)
+M -> G : displayExhibitions()
+G --> U : list of exhibitions
+M -> T : readInt("Enter Exhibition ID")
+T --> M : exhibitionId
+M -> G : displayAvailableArtworks()
+G --> U : list of unsold artworks
+M -> T : readInt("Enter Artwork ID")
+T --> M : artworkId
+M -> G : organizeExhibition(exhibitionId, artworkId)
+G -> G : find exhibition and artwork by ID
+
+alt exhibition / artwork not found, or artwork is Sold
+  G --> M : throw GalleryException(message)
+  M --> U : [ERROR] message
+else valid
+  G -> E : addArtwork(artworkId)
+  alt artwork already in this exhibition
+    E --> G : throw GalleryException
+    G --> M : exception propagates
+    M --> U : [ERROR] already part of exhibition
+  else added
+    opt count == capacity
+      E -> E : grow() : new int[2 x capacity], copy, delete[] old
+    end
+    E --> G : ok
+    G -> A : updateStatus("Exhibited")
+    G --> M : done
+    M -> G : displayExhibitionDetails(exhibitionId)
+    G --> U : exhibition and its artworks
+  end
+end
+@enduml

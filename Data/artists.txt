@@ -1,0 +1,4 @@
+101|Vincent van Gogh|Post-Impressionism
+102|Claude Monet|Impressionism
+103|Frida Kahlo|Surrealism
+104|Raja Ravi Varma|Indian Classical Realism

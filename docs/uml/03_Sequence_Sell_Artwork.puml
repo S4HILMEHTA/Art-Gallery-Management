@@ -1,0 +1,48 @@
+@startuml
+title Sequence Diagram 1 - Main Transaction: Sell Artwork
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+autonumber
+
+actor "Gallery Manager" as U
+participant "Menu" as M
+participant "Gallery" as G
+participant "Registry<Artwork>" as RA
+participant "Registry<Customer>" as RC
+participant "Sale" as S
+participant "Registry<Sale>" as RS
+participant "FileManager" as F
+database "Data files" as D
+
+U -> M : choose 6 -> 1 (Sell Artwork)
+M -> G : displayAvailableArtworks()
+G --> M : table of unsold artworks
+U -> M : enter Artwork ID
+M -> G : findArtwork(artworkId)
+G -> RA : findById(artworkId)
+RA --> G : Artwork*
+U -> M : enter Customer ID
+M -> G : sellArtwork(artworkId, customerId)
+G -> RA : findById(artworkId)
+G -> RC : findById(customerId)
+
+alt artwork or customer not found, or artwork already Sold
+  G --> M : throw GalleryException(message)
+  M --> U : [ERROR] message
+else valid sale
+  G -> S : new Sale(saleId, artworkId, customerId, price, today)
+  G -> RS : add(sale)
+  G -> RA : artwork.updateStatus("Sold")
+  G --> M : saleId
+  M -> G : displayReceipt(saleId)
+  G --> U : prints SALE RECEIPT
+end
+
+U -> M : choose 9 (Exit)
+M -> F : save(gallery)
+F -> D : write artworks.txt, sales.txt, ...
+F --> M : done
+M --> U : "All records saved"
+@enduml

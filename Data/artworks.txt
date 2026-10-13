@@ -1,0 +1,6 @@
+1001|Starry Night|101|250000.00|Sold
+1002|Sunflowers|101|210000.00|Exhibited
+1003|Water Lilies|102|180000.50|Exhibited
+1004|Impression Sunrise|102|275000.00|Exhibited
+1005|The Two Fridas|103|320000.00|Exhibited
+1006|Shakuntala|104|150000.00|Available

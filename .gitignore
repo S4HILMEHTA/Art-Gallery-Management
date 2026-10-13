@@ -1,0 +1,6 @@
+# compiled output
+*.o
+*.obj
+ArtGallery
+# keep ArtGallery.exe in the repo (required deliverable)
+tests/results.json

@@ -1,0 +1,185 @@
+@startuml
+title Class Diagram - Art Gallery Management System
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam classBackgroundColor #FFFFFF
+skinparam classBorderColor #1F3864
+skinparam classArrowColor #1F3864
+skinparam nodesep 40
+skinparam ranksep 70
+
+abstract class Entity {
+  # id : int
+  + Entity()
+  + Entity(id : int)
+  + ~Entity()
+  + getId() : int
+  + {abstract} display() : void
+  + {abstract} serialize() : string
+  + {abstract} typeName() : string
+  + {abstract} searchText() : string
+  + matches(term : string) : bool
+}
+
+abstract class Person {
+  # name : string
+  + Person()
+  + Person(id : int, name : string)
+  + getName() : string
+  + setName(newName : string) : void
+  + {abstract} role() : string
+}
+
+class Artist {
+  - style : string
+  + Artist()
+  + Artist(id : int, name : string, style : string)
+  + getStyle() : string
+  + setStyle(s : string) : void
+  + display() : void
+  + serialize() : string
+}
+
+class Customer {
+  - phone : string
+  + Customer()
+  + Customer(id : int, name : string, phone : string)
+  + getPhone() : string
+  + setPhone(p : string) : void
+  + display() : void
+  + serialize() : string
+}
+
+class Artwork {
+  - title : string
+  - artistId : int
+  - price : double
+  - status : string
+  + Artwork()
+  + Artwork(id : int, title : string, artistId : int, price : double)
+  + getTitle() : string
+  + getPrice() : double
+  + setPrice(p : double) : void
+  + updateStatus(s : string) : void
+  + display() : void
+  + serialize() : string
+}
+
+class Exhibition {
+  - name : string
+  - date : string
+  - venue : string
+  - artworkIds : int*
+  - count : int
+  - capacity : int
+  - grow() : void
+  + Exhibition()
+  + Exhibition(id : int, name : string, date : string, venue : string)
+  + Exhibition(other : Exhibition)
+  + ~Exhibition()
+  + addArtwork(artworkId : int) : void
+  + removeArtwork(artworkId : int) : bool
+  + hasArtwork(artworkId : int) : bool
+  + display() : void
+  + serialize() : string
+}
+
+class Sale {
+  - artworkId : int
+  - customerId : int
+  - amount : double
+  - date : string
+  - status : string
+  + Sale()
+  + Sale(id, artworkId, customerId, amount, date)
+  + isCompleted() : bool
+  + cancel() : void
+  + display() : void
+  + serialize() : string
+}
+
+class "Registry<T>" as Registry {
+  - items : T*
+  - count : int
+  - capacity : int
+  - grow() : void
+  + Registry(initialCapacity : int)
+  + ~Registry()
+  + add(item : T) : void
+  + at(index : int) : T&
+  + findById(id : int) : T*
+  + removeAt(index : int) : void
+  + size() : int
+  + clear() : void
+}
+
+class Gallery {
+  - galleryName : string
+  - artworks : Registry<Artwork>
+  - artists : Registry<Artist>
+  - customers : Registry<Customer>
+  - exhibitions : Registry<Exhibition>
+  - sales : Registry<Sale>
+  + Gallery()
+  + Gallery(name : string)
+  + addArtist(name, style) : int
+  + addArtwork(title, artistId, price) : int
+  + addCustomer(name, phone) : int
+  + addExhibition(name, date, venue) : int
+  + sellArtwork(artworkId, customerId) : int
+  + cancelSale(saleId : int) : void
+  + organizeExhibition(exhibitionId, artworkId) : void
+  + searchArtworks(term : string) : int
+  + updateArtwork(id, title, price, status) : void
+  + deleteArtist(id : int) : void
+  + reportSales() : void
+  + reportInventory() : void
+}
+
+class FileManager {
+  - directory : string
+  + FileManager()
+  + FileManager(dataDirectory : string)
+  + save(gallery : Gallery) : void
+  + load(gallery : Gallery) : int
+}
+
+class Menu {
+  - gallery : Gallery&
+  - fileManager : FileManager&
+  + Menu(gallery, fileManager)
+  + run() : void
+}
+
+class GalleryException {
+  + GalleryException(message : string)
+}
+class InputEndedException
+
+Entity <|-- Person
+Entity <|-- Artwork
+Entity <|-- Exhibition
+Entity <|-- Sale
+Person <|-- Artist
+Person <|-- Customer
+
+Menu -right-> FileManager : calls
+Menu --> Gallery : calls
+FileManager .right.> Gallery : saves / loads
+Gallery *-right- "5" Registry : stores records in
+Gallery .down.> GalleryException : throws
+GalleryException <|-- InputEndedException
+Registry o-down- "0..*" Entity : holds
+
+Artist "1" -- "0..*" Artwork : creates
+Customer "1" -- "0..*" Sale : buys
+Artwork "1" -- "0..*" Sale : sold in
+Exhibition "0..*" o-- "0..*" Artwork : displays
+
+Person -[hidden]right- Artwork
+Artwork -[hidden]right- Exhibition
+Exhibition -[hidden]right- Sale
+Artist -[hidden]right- Customer
+@enduml

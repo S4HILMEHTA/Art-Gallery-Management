@@ -1,7 +1,7 @@
 # Art Gallery Management System
 
 **C++ Console-Based OOP Project (CPP64)**
-**Student:** Sahil Mehta  |  **Enrollment No.:** IU2541230101  |  **Submission Date:** 13/10/2026
+**Name:** Sahil Mehta  |  **Enrollment No.:** IU2541230101  |  **Submission Date:** 13/10/2026
 
 A console application that manages the day-to-day records of an art gallery: artists, artworks, customers,
 exhibitions and sales. All data is stored in text files so records survive after the program is closed.
